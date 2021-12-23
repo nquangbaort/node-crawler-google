@@ -22,7 +22,7 @@ module.exports.search = (req , res , next) => {
         const params = {
             engine: "google",
             q: q,
-            num : 100,
+            num : 1000,
             start : i
         };
         SEARCH_API.json(params,  (data) => {
