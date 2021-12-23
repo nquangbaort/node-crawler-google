@@ -9,12 +9,13 @@ let columns = {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
-const SERP_API = require('google-search-results-nodejs');
-const SEARCH_API = new SERP_API.GoogleSearch(process.env.API_KEY);
+const GG_API = require('google-search-results-nodejs');
+const SEARCH_API = new GG_API.GoogleSearch(process.env.API_KEY);
 let dataContent = []
 module.exports.search = (req , res , next) => {
     let contentFie = []
     let q = req.query.q
+    if(!q) return res.render('search', { title: 'Custom search api google'});
     let nameFileCSV = `data_search-${q}-${Math.floor(Math.random()*999999)}.csv`
     let dataSearch = []
     for(let i = 1; i <= 100 ; i+=10){
@@ -40,5 +41,6 @@ module.exports.search = (req , res , next) => {
             });
         });
     }
-    res.render('search', { title: 'Custom search api google' , dataSearch : dataSearch , file : process.env.BASE_URL_CSV+nameFileCSV});
+    res.render('search', { title: 'Custom search api google' , q: q, dataSearch : dataSearch , file : process.env.BASE_URL_CSV+nameFileCSV});
+
 }

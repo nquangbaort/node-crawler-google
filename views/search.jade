@@ -4,7 +4,8 @@ block content
   .container.my-5
     form
       .input-group.mb-3
-          input.form-control(type='text' placeholder="Recipient's username" name="q")
+          input.form-control(type='text' placeholder="VAIX" name="q" value=q)
           .input-group-append
               button#basic-addon2.input-group-text.btn.btn-primary search
-    a(href=file download='' class="btn btn-primary") download
+    if file
+      a(href=file download='' class="btn btn-primary") download
