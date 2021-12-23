@@ -7,15 +7,15 @@
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
+    "csv": "^6.0.4",
+    "csv-stringify": "^6.0.4",
     "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
     "express": "~4.16.1",
+    "google-search-results-nodejs": "^2.0.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.15",
-    "cheerio": "^1.0.0-rc.10",
-    "csv": "^6.0.4",
-    "csv-stringify": "^6.0.4",
-    "request": "^2.88.2"
+    "nodemon": "^2.0.15"
   }
 }
