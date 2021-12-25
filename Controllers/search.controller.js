@@ -12,7 +12,7 @@ function sleep(ms) {
 const GG_API = require('google-search-results-nodejs');
 const SEARCH_API = new GG_API.GoogleSearch(process.env.API_KEY);
 let dataContent = []
-module.exports.search = (req , res , next) => {
+module.exports.search = async (req , res , next) => {
     let contentFie = []
     let q = req.query.q
     if(!q) return res.render('search', { title: 'Custom search api google'});
@@ -48,7 +48,7 @@ module.exports.search = (req , res , next) => {
                 });
             });
         });
+        await sleep(2000)
     }
     res.render('search', { title: 'Custom search api google' , q: q, dataSearch : dataSearch , file : process.env.BASE_URL_CSV+nameFileCSV});
-
 }
