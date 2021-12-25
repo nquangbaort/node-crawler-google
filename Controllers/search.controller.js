@@ -11,19 +11,33 @@ function sleep(ms) {
 }
 const GG_API = require('google-search-results-nodejs');
 const SEARCH_API = new GG_API.GoogleSearch(process.env.API_KEY);
-let dataContent = []
-module.exports.search = async (req , res , next) => {
+
+
+module.exports.search =  (req , res , next) => {
     let contentFie = []
     let q = req.query.q
     if(!q) return res.render('search', { title: 'Custom search api google'});
     let nameFileCSV = `data_search-${q}-${Math.floor(Math.random()*999999)}.csv`
-    let dataSearch = []
+    const callback = async function(data) {
+        const content = await data['organic_results']
+        for(let j = 0; j < content.length; j++) {
+            let title = content[j].title
+            let link = content[j].link
+            contentFie.push({ title, link });
+            stringify(contentFie, { header: true, columns: columns }, (err, output) => {
+                if (err) throw err;
+                fs.writeFile(path.resolve()+'/public/csv/' + nameFileCSV, output, (err) => {
+                    if (err) throw err;
+                });
+            });
+        }
+    };
     for(let i = 0; i < 200 ; i+=10){
         const params = {
             engine: "google",
             q: q,
             num : 100,
-            start : i,
+            start : 0,
             location_requested: "Japan",
             location_used:"Japan",
             google_domain:"google.co.jp",
@@ -31,24 +45,9 @@ module.exports.search = async (req , res , next) => {
             gl:"jp",
             device:"desktop"
         };
-        console.log('Fetch result from records start by ' + i)
-        SEARCH_API.json(params,  (data) => {
-            dataSearch = data['organic_results']
-            dataContent.push(data['organic_results'])
-            for(let j = 0; j < dataSearch.length; j++) {
-                let title = dataSearch[j].title
-                let link = dataSearch[j].link
-                contentFie.push({ title, link });
-                console.log(title + ' : ' + link)
-            }
-            stringify(contentFie, { header: true, columns: columns }, (err, output) => {
-                if (err) throw err;
-                fs.writeFile(path.resolve()+'/public/csv/' + nameFileCSV, output, (err) => {
-                    if (err) throw err;
-                });
-            });
-        });
-        await sleep(2000)
+        SEARCH_API.json(params, async (data) => {
+           await callback(data)
+        })
     }
-    res.render('search', { title: 'Custom search api google' , q: q, dataSearch : dataSearch , file : process.env.BASE_URL_CSV+nameFileCSV});
+    res.render('search', { title: 'Custom search api google' , q: q, file : process.env.BASE_URL_CSV+nameFileCSV});
 }
